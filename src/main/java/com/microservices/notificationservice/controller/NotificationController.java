@@ -19,23 +19,22 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    public ResponseEntity<List<Notification>> getUserNotifications(@AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
-        List<Notification> notifications = notificationService.getUserNotifications(userId);
-        return ResponseEntity.ok(notifications);
+    public ResponseEntity<List<Notification>> getAll(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(
+                notificationService.getUserNotifications(jwt.getSubject())
+        );
     }
 
     @GetMapping("/unread")
-    public ResponseEntity<List<Notification>> getUnreadNotifications(@AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
-        List<Notification> notifications = notificationService.getUnreadNotifications(userId);
-        return ResponseEntity.ok(notifications);
+    public ResponseEntity<List<Notification>> getUnread(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(
+                notificationService.getUnreadNotifications(jwt.getSubject())
+        );
     }
 
     @GetMapping("/unread/count")
     public ResponseEntity<Map<String, Long>> getUnreadCount(@AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
-        Long count = notificationService.getUnreadCount(userId);
+        long count = notificationService.getUnreadCount(jwt.getSubject());
         return ResponseEntity.ok(Map.of("count", count));
     }
 
@@ -43,18 +42,14 @@ public class NotificationController {
     public ResponseEntity<Void> markAsRead(
             @PathVariable Long id,
             @AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
-        notificationService.markAsRead(id, userId);
+
+        notificationService.markAsRead(id, jwt.getSubject());
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/read-all")
     public ResponseEntity<Void> markAllAsRead(@AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
-        notificationService.markAllAsRead(userId);
+        notificationService.markAllAsRead(jwt.getSubject());
         return ResponseEntity.noContent().build();
     }
 }
-
-
-

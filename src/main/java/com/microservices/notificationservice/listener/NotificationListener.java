@@ -17,11 +17,8 @@ public class NotificationListener {
     private final NotificationService notificationService;
 
     @RabbitListener(queues = RabbitMQConfig.NOTIFICATION_QUEUE)
-    public void handleNotification(Map<String, Object> message) {
-        log.info("Received notification message: {}", message);
+    public void receiveMessage(Map<String, Object> message) {
+        log.info("Notification received: {}", message);
         notificationService.processNotificationMessage(message);
     }
 }
-
-
-

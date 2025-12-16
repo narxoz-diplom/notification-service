@@ -1,7 +1,6 @@
 package com.microservices.notificationservice.config;
 
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -14,21 +13,21 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue notificationQueue() {
-        return new Queue(NOTIFICATION_QUEUE, true);
+        return new Queue(NOTIFICATION_QUEUE);
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(new Jackson2JsonMessageConverter());
-        return template;
-    }
-
-    @Bean
-    public Jackson2JsonMessageConverter messageConverter() {
+    public Jackson2JsonMessageConverter jsonConverter() {
         return new Jackson2JsonMessageConverter();
     }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(
+            org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory,
+            Jackson2JsonMessageConverter jsonConverter) {
+
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jsonConverter);
+        return rabbitTemplate;
+    }
 }
-
-
-
