@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class NotificationListener {
 
     private final NotificationService notificationService;

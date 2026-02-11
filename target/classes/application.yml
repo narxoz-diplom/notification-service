@@ -26,19 +26,17 @@ spring:
     username: ${RABBITMQ_USERNAME:admin}
     password: ${RABBITMQ_PASSWORD:admin}
 
-keycloak:
-  url: ${KEYCLOAK_URL:http://localhost:8080}
-  realm: microservices-realm
-  jwks-uri: ${KEYCLOAK_JWKS_URI:http://localhost:8080/realms/microservices-realm/protocol/openid-connect/certs}
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-change-in-production-min-32-chars}
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info,prometheus,metrics
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
 
 logging:
