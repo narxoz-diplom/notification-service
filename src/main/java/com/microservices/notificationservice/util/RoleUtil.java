@@ -10,8 +10,6 @@ import java.util.Map;
 @Slf4j
 public final class RoleUtil {
 
-    private static final String ADMIN_ROLE = "admin";
-
     private RoleUtil() {
     }
 
@@ -63,11 +61,7 @@ public final class RoleUtil {
             return roles;
         }
 
-        log.debug("No roles in JWT for news authorization");
+        log.debug("No roles in JWT");
         return List.of();
-    }
-
-    public static boolean isAdmin(Jwt jwt) {
-        return getRoles(jwt).stream().anyMatch(r -> ADMIN_ROLE.equalsIgnoreCase(r));
     }
 }
