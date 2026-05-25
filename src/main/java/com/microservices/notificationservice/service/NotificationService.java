@@ -1,5 +1,7 @@
 package com.microservices.notificationservice.service;
 
+import com.microservices.notificationservice.dto.CreateNotificationDto;
+import com.microservices.notificationservice.mapper.NotificationMapper;
 import com.microservices.notificationservice.model.Notification;
 import com.microservices.notificationservice.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -17,19 +18,12 @@ import java.util.Map;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final NotificationMapper notificationMapper;
 
     @Transactional
-    public Notification createNotification(String userId, String message, String type) {
-        log.info("Creating notification for user: {}, message: {}", userId, message);
-        
-        Notification notification = new Notification();
-        notification.setUserId(userId);
-        notification.setMessage(message);
-        notification.setType(type);
-        notification.setCreatedAt(LocalDateTime.now());
-        notification.setRead(false);
-        
-        return notificationRepository.save(notification);
+    public Notification createNotification(CreateNotificationDto dto) {
+        log.info("Creating notification for user: {}, message: {}", dto.getUserId(), dto.getMessage());
+        return notificationRepository.save(notificationMapper.toEntity(dto));
     }
 
     public List<Notification> getUserNotifications(String userId) {
@@ -66,12 +60,9 @@ public class NotificationService {
 
     public void processNotificationMessage(Map<String, Object> message) {
         try {
-            String userId = (String) message.get("userId");
-            String notificationMessage = (String) message.get("message");
-            String type = (String) message.getOrDefault("type", "GENERAL");
-            
-            createNotification(userId, notificationMessage, type);
-            log.info("Notification processed successfully for user: {}", userId);
+            CreateNotificationDto dto = notificationMapper.fromMessage(message);
+            createNotification(dto);
+            log.info("Notification processed successfully for user: {}", dto.getUserId());
         } catch (Exception e) {
             log.error("Error processing notification message", e);
         }

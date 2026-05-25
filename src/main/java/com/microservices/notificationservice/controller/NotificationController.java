@@ -14,8 +14,8 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/notifications")
 @RequiredArgsConstructor
+@RequestMapping("/api/notifications")
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -41,10 +41,7 @@ public class NotificationController {
     }
 
     @PutMapping("/{id}/read")
-    public ResponseEntity<Void> markAsRead(
-            @PathVariable Long id,
-            @AuthenticationPrincipal Jwt jwt) {
-
+    public ResponseEntity<Void> markAsRead(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
         notificationService.markAsRead(id, jwt.getSubject());
         return ResponseEntity.noContent().build();
     }
@@ -55,3 +52,4 @@ public class NotificationController {
         return ResponseEntity.noContent().build();
     }
 }
+
